@@ -1,0 +1,20 @@
+TCX2GPX by telegnom (copyleft) - version 0.1 - 2009-06-17
+---------------------------------------------------------
+Das Script wandelt mit Hilfe von GPSBABEL alle in dem    
+angegebenen Verzeichnis gefundenen .tcx Dateien in .gpx  
+Dateien um. Die .tcx Dateien werden dabei nicht gelöscht.
+
+SYNTAX
+---------------------------------------------------------
+tcx2gpx [options] DIRECTORY
+
+Gültige Optionen sind:
+-v     verbose     detailierte Ausgaben zur Laufzeit
+-d     debug       noch geschwätziger als -v
+-h     help        zeigt "diese" Readme an
+
+KONTAKT
+---------------------------------------------------------
+Webseite und download: 
+http://github.com/telegnom/tcx2gpx
+

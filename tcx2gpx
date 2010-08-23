@@ -1,24 +1,25 @@
 #!/bin/bash
  
 function long_help {
-  echo "TCX2OSM by telegnom (copyleft) - version 0.1 - 2009-06-17"
+  echo "TCX2GPX by telegnom (copyleft) - version 0.1 - 2009-06-17"
   echo "---------------------------------------------------------"
   echo "Das Script wandelt mit Hilfe von GPSBABEL alle in dem    "
-  echo "angegebenen Verzeichnis gefundenen .tcx Dateien in .osm  "
-  echo "Dateien um."
+  echo "angegebenen Verzeichnis gefundenen .tcx Dateien in .gpx  "
+  echo "Dateien um. Die .tcx Dateien werden dabei nicht gelöscht."
   echo ""
   echo "SYNTAX"
   echo "---------------------------------------------------------"
-  echo "tcx2osm [options] DIRECTORY";
+  echo "tcx2gpx [options] DIRECTORY";
   echo ""
   echo "Gültige Optionen sind:"
   echo "-v     verbose     detailierte Ausgaben zur Laufzeit"
   echo "-d     debug       noch geschwätziger als -v"
+  echo "-h     help        zeigt diese \"Hilfe\" an"
   echo ""
   echo "KONTAKT"
   echo "---------------------------------------------------------"
   echo "Webseite und download: "
-  echo "http://wiki.openstreetmap.org/wiki/User:Telegnom/tcx2gpx"
+  echo "http://github.com/telegnom/tcx2gpx"
   exit
 }
  
