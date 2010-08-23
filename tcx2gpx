@@ -1,0 +1,109 @@
+#!/bin/bash
+ 
+function long_help {
+  echo "TCX2OSM by telegnom (copyleft) - version 0.1 - 2009-06-17"
+  echo "---------------------------------------------------------"
+  echo "Das Script wandelt mit Hilfe von GPSBABEL alle in dem    "
+  echo "angegebenen Verzeichnis gefundenen .tcx Dateien in .osm  "
+  echo "Dateien um."
+  echo ""
+  echo "SYNTAX"
+  echo "---------------------------------------------------------"
+  echo "tcx2osm [options] DIRECTORY";
+  echo ""
+  echo "Gültige Optionen sind:"
+  echo "-v     verbose     detailierte Ausgaben zur Laufzeit"
+  echo "-d     debug       noch geschwätziger als -v"
+  echo ""
+  echo "KONTAKT"
+  echo "---------------------------------------------------------"
+  echo "Webseite und download: "
+  echo "http://wiki.openstreetmap.org/wiki/User:Telegnom/tcx2gpx"
+  exit
+}
+ 
+function short_help {
+  echo "tcx2gpx - Fehlende / falsche Optionen"
+  echo "\"tcx2osm -h\" für weitere Informationen"
+  echo ""
+  exit
+}
+ 
+ 
+# Prüfen ob Parameter übergeben wurden, wenn nicht Hilfe ausgeben
+if [ $# -eq 0 ]; then
+  short_help 
+fi
+ 
+# Auswertung der übergebenen Parameter
+counter=0
+param_count=$#
+while [ $1 ]; do
+  let counter=counter+1
+  if [ $param_count -eq $counter ] && [ `echo $1 | cut -c 1` != "-" ]; then 
+    dir=$1
+  else
+    case $1 in 
+      "-v") verbose=1;;
+      "-d") debug=1;;
+      "-h") long_help;;
+      *) short_help;;
+    esac
+  fi
+  shift
+done
+if [ "$verbose" = "1" ] || [ "$debug" = "1" ]; then
+  echo "+----------------------------------------------+"
+  echo "| tcx2gpx - telegnom - http://osm.telegnom.net |"
+  echo -e "+----------------------------------------------+\n"
+fi
+if [ "$debug" = "1" ]; then
+  echo -e "gewähltes Verzeichnis: $dir \n"
+fi 
+# Prüfen ob es sich bei dem als Verzeichnis übergebenen Wert tatsächlich um ein Verzeichnis handelt
+if [ "$debug" = "1" ]; then
+  echo -e "dir_check=`file -b $dir 2> /dev/null`\n"
+fi
+dir_check=`file -b $dir 2> /dev/null`
+if [ "$dir_check" != directory ]; then
+ 
+  # Wenn nicht --> Fehlermeldung
+  echo -e "$dir ist KEIN Verzeichnis \n"
+  exit
+fi
+cd $dir
+ 
+# Wenn verbose UND debug angegeben --> Verzeichnis ausgeben
+if [ "$verbose" = "1" ] || [ "$debug" = "1" ]; then
+  echo -e "`pwd` ist ein Verzeichnis...\n"
+fi
+ 
+# Prüfen ob in dem Verzeichnis .tcx Dateien vorhanden sind
+if [ "$debug" = "1" ]; then 
+  echo -e "tcx_count=`find . -maxdepth 1 -name "*.tcx" -readable | cut -d '/' -f 2 | wc -l`\n"
+fi
+tcx_count=`find . -maxdepth 1 -name "*.tcx" -readable | cut -d '/' -f 2 | wc -l`
+#tcx_count=`find . -maxdepth 1 -name "*.tcx" | cut -d '/' -f 2 | wc -l`
+if [ "$tcx_count" = "0" ]; then
+ 
+  # Wenn keine .tcx Dateien vorhanden Script abbrechen und Fehlermeldung ausgeben
+  echo -e "Keine lesbaren .tcx Dateien in `pwd` gefunden\n"
+  exit
+fi
+ 
+# Wenn Verbose UND Debug --> Anzahl der gefunden Elemente ausgeben
+if [ "$debug" != "1" ] && [ "$verbose" = "1" ]; then
+  echo -e "$tcx_count .tcx Datei/en werden verarbeitet\n"
+fi
+tcx_file=echo $tcx_file | rev | cut -d "." -f 2 | rev
+for tcx_file in `find . -maxdepth 1 -name "*.tcx" -readable | cut -d '/' -f 2`; do
+tcx_file_name=`echo $tcx_file | rev | cut -d "." -f 2 | rev`
+  if [ "$debug" = "1" ]; then
+    echo gpsbabel -i gtrnctr -f $tcx_file -o gpx -F $tcx_file_name.gpx
+  fi
+  if [ "$verbose" = "1" ] && [ "$debug" != "1" ]; then
+    echo "$tcx_file --> $tcx_file_name.gpx"
+  fi
+  `gpsbabel -i gtrnctr -f $tcx_file -o gpx -F $tcx_file_name.gpx`
+done
+echo
